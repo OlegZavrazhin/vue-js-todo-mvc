@@ -1,7 +1,6 @@
 // Full spec-compliant TodoMVC with localStorage persistence
 // and hash-based routing in ~120 effective lines of JavaScript.
 
-// localStorage persistence
 var STORAGE_KEY = 'todos-vuejs-2.0'
 var todoStorage = {
     fetch: function () {
@@ -17,7 +16,6 @@ var todoStorage = {
     }
 }
 
-// visibility filters
 var filters = {
     all: function (todos) {
         return todos
@@ -34,9 +32,30 @@ var filters = {
     }
 }
 
-// app Vue instance
+var cases = {
+    sortCase: function (arr, sortKey, reverse) {
+        arr = convertArray(arr)
+        if (!sortKey) {
+            return arr
+        }
+        todo = (reverse && reverse < 0) ? -1 : 1
+        return arr.slice().sort(function (a, b) {
+            if (sortKey !== '$key') {
+                if (isObject(a) && '$value' in a) a = a.$value
+                if (isObject(b) && '$value' in b) b = b.$value
+            }
+            a = Vue.util.isObject(a) ? Vue.parsers.path.getPath(a, sortKey) : a
+            b = Vue.util.isObject(b) ? Vue.parsers.path.getPath(b, sortKey) : b
+
+            a = a.toLowerCase()
+            b = b.toLowerCase()
+
+            return a === b ? 0 : a > b ? todo : -todo
+        })
+    }
+}
+
 var app = new Vue({
-    // app initial state
     data: {
         todos: todoStorage.fetch(),
         newTodo: '',
@@ -45,7 +64,6 @@ var app = new Vue({
         sortAsc: true
     },
 
-    // watch todos change for localStorage persistence
     watch: {
         todos: {
             handler: function (todos) {
@@ -55,8 +73,6 @@ var app = new Vue({
         }
     },
 
-    // computed properties
-    // http://vuejs.org/guide/computed.html
     computed: {
         filteredTodos: function () {
             var ascDesc = this.sortAsc ? 1 : -1;
@@ -78,7 +94,6 @@ var app = new Vue({
             }
         },
         sortedData: function() {
-
         }
     },
 
@@ -88,8 +103,6 @@ var app = new Vue({
         }
     },
 
-    // methods that implement data logic.
-    // note there's no DOM manipulation here at all.
     methods: {
         addTodo: function () {
             var value = this.newTodo && this.newTodo.trim()
@@ -138,9 +151,6 @@ var app = new Vue({
         }
     },
 
-    // a custom directive to wait for the DOM to be updated
-    // before focusing on the input field.
-    // http://vuejs.org/guide/custom-directive.html
     directives: {
         'todo-focus': function (el, value) {
             if (value) {
@@ -150,7 +160,6 @@ var app = new Vue({
     }
 })
 
-// handle routing
 function onHashChange () {
     var visibility = window.location.hash.replace(/#\/?/, '')
     if (filters[visibility]) {
@@ -164,5 +173,4 @@ function onHashChange () {
 window.addEventListener('hashchange', onHashChange)
 onHashChange()
 
-// mount
 app.$mount('.todoapp')
