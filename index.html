@@ -10,6 +10,16 @@
 
     <style>
         [v-cloak] { display: none; }
+        .sort-btn {
+            color: inherit;
+            margin: 3px auto 3px auto;
+            padding: 3px 7px;
+            text-decoration: none;
+            border: 1px solid rgba(175, 47, 47, 0.2);
+            border-radius: 3px;
+            display: block;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -44,6 +54,10 @@
             </li>
         </ul>
     </section>
+    <button @click="invertSort(todos)"
+            class="sort-btn">
+        Sort asc/desc (titles)
+    </button>
     <footer class="footer" v-show="todos.length" v-cloak>
     <span class="todo-count">
       <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
