@@ -60,8 +60,7 @@ var app = new Vue({
     computed: {
         filteredTodos: function () {
             var ascDesc = this.sortAsc ? 1 : -1;
-            return filters[this.visibility](this.todos),
-            this.todos.sort(function (a, b) {
+            return filters[this.visibility](this.todos).sort(function (a, b) {
                 return ascDesc * a.title.localeCompare(b.title);
             });
         },
