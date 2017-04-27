@@ -37,6 +37,7 @@
         <input class="toggle-all" type="checkbox" v-model="allDone">
         <ul class="todo-list">
             <li v-for="todo in filteredTodos"
+                v-for="todo in sortedTodos"
                 class="todo"
                 :key="todo.id"
                 :class="{ completed: todo.completed, editing: todo == editedTodo }">
