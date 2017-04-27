@@ -60,7 +60,8 @@ var app = new Vue({
         todos: todoStorage.fetch(),
         newTodo: '',
         editedTodo: null,
-        visibility: 'all'
+        visibility: 'all',
+        sortAsc: true
     },
 
     watch: {
@@ -74,7 +75,11 @@ var app = new Vue({
 
     computed: {
         filteredTodos: function () {
-            return filters[this.visibility](this.todos)
+            var ascDesc = this.sortAsc ? 1 : -1;
+            return filters[this.visibility](this.todos),
+            this.todos.sort(function (a, b) {
+                return ascDesc * a.title.localeCompare(b.title);
+            });
         },
         remaining: function () {
             return filters.active(this.todos).length
@@ -89,8 +94,7 @@ var app = new Vue({
                 })
             }
         },
-        sortedTodos: function () {
-            return cases
+        sortedData: function() {
         }
     },
 
@@ -141,6 +145,10 @@ var app = new Vue({
 
         removeCompleted: function () {
             this.todos = filters.active(this.todos)
+        },
+
+        invertSort: function(todo) {
+            this.sortAsc = !this.sortAsc;
         }
     },
 
